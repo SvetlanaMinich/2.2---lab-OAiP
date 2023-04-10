@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->deleteBegin->setEnabled(false);
     ui->deleteEnd->setEnabled(false);
     ui->nodeSearch->setEnabled(false);
+    ui->deleteByName->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -145,14 +146,28 @@ void MainWindow::on_openFile_clicked()
     const char* pathres = p.c_str();
     if(!fopen_s(&file,pathres,"r"))
     {
-        ui->listOfReceipts->setColumnCount(4);
-        ui->listOfReceipts->setHorizontalHeaderLabels(QStringList()<<"Наименование"<<
-                                                      "Марка"<<"Дата приемки"<<
-                                                      "Состояние");
+        int empty = 1;
+        int c = fgetc(file);
+        if (c != EOF) {
+            empty = 0;
+        }
+        if(empty)
+        {
+            ui->listOfReceipts->setColumnCount(4);
+            ui->listOfReceipts->setHorizontalHeaderLabels(QStringList()<<"Наименование"<<
+                                                          "Марка"<<"Дата приемки"<<
+                                                          "Состояние");
+
+            ui->addNode->setEnabled(true);
+            ui->openFile->setEnabled(false);
+        }
+        else
+        {
+            QMessageBox::information(this,tr("Ошибка"),
+                                     tr("Файл должен быть пустым при открытии"));
+        }
     }
     fclose(file);
-    ui->addNode->setEnabled(true);
-    ui->openFile->setEnabled(false);
 }
 
 void MainWindow::on_addNode_clicked()
@@ -185,6 +200,7 @@ void MainWindow::on_addNode_clicked()
     ui->deleteBegin->setEnabled(true);
     ui->deleteEnd->setEnabled(true);
     ui->nodeSearch->setEnabled(true);
+    ui->deleteByName->setEnabled(true);
 }
 
 void MainWindow::on_saveToFile_clicked()
@@ -268,6 +284,7 @@ void MainWindow::on_deleteBegin_clicked()
         ui->deleteBegin->setEnabled(false);
         ui->deleteEnd->setEnabled(false);
         ui->nodeSearch->setEnabled(false);
+        ui->deleteByName->setEnabled(false);
     }
     mainList.DeleteBegin(head);
     ui->listOfReceipts->removeRow(0);
@@ -284,6 +301,7 @@ void MainWindow::on_deleteEnd_clicked()
         ui->deleteBegin->setEnabled(false);
         ui->deleteEnd->setEnabled(false);
         ui->nodeSearch->setEnabled(false);
+        ui->deleteByName->setEnabled(false);
     }
     mainList.DeleteEnd(tail);
     ui->listOfReceipts->removeRow(ui->listOfReceipts->rowCount()-1);
@@ -308,12 +326,59 @@ void MainWindow::on_nodeSearch_clicked()
     }
 }
 
+void MainWindow::on_deleteByName_clicked()
+{
+    bool ok;
+    QString naming = QInputDialog::getText(this,tr("Наименование"),
+                                       tr("Введите наименование группы изделий"),
+                                       QLineEdit::Normal,"",&ok);
+    bool del = false;
+    if(ui->listOfReceipts->item(0,0)->text()==naming)
+    {
+        mainList.DeleteBegin(head);
+        ui->listOfReceipts->removeRow(0);
+        del = true;
+    }
+    else if(ui->listOfReceipts->item(ui->listOfReceipts->rowCount()-1,0)->text()
+            == naming)
+    {
+        mainList.DeleteEnd(tail);
+        ui->listOfReceipts->removeRow(ui->listOfReceipts->rowCount()-1);
+        del = true;
+    }
+    else
+    {
+        int row = mainList.DeleteMiddle(naming, head);
+        if(row==-1)
+        {
+            QMessageBox::information(this, tr("Ошибка"),tr("Такого элемента в списке нет"));
+        }
+        else
+        {
+            ui->listOfReceipts->removeRow(row);
+            del = true;
+        }
+    }
+    if(del == true)
+    {
+        if(ui->listOfReceipts->rowCount()==0)
+        {
+            ui->addNode->setEnabled(true);
+            ui->addBegin->setEnabled(false);
+            ui->addEnd->setEnabled(false);
+            ui->saveToFile->setEnabled(false);
+            ui->deleteBegin->setEnabled(false);
+            ui->deleteEnd->setEnabled(false);
+            ui->nodeSearch->setEnabled(false);
+            ui->deleteByName->setEnabled(false);
+        }
+    }
+}
 
-
-//Добавить проверку на файл (открывать только пустые)
 //Добавить сортировку
-//Добавить удаление в середине
-//Добавить добавление в середине
+
+
+
 
 
 

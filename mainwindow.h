@@ -34,6 +34,8 @@ private slots:
 
     void on_nodeSearch_clicked();
 
+    void on_deleteByName_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

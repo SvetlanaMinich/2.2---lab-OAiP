@@ -23,7 +23,7 @@ public:
     void InsertMiddle(Receipt value, Node* &node_before, Node* &node_after);
     void DeleteBegin(Node* &head);
     void DeleteEnd(Node* &tail);
-    void DeleteMiddle(Node* &del);
+    int DeleteMiddle(QString name, Node* head);
     void MergeSort();
     Receipt NodeSearch(QString name, Node* head);
     void NodeSearchByParameter();

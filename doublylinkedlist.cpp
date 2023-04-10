@@ -92,13 +92,41 @@ void DoublyLinkedList::DeleteEnd(Node* &tail)
     delete del;
 }
 
-void DoublyLinkedList::DeleteMiddle(Node* &del)
+int DoublyLinkedList::DeleteMiddle(QString name, Node* head)
 {
-    Node* node_to_delete = del;
-    del = del->next;
-    node_to_delete->prev->next = node_to_delete->next;
-    node_to_delete->next->prev = node_to_delete->prev;
-    delete node_to_delete;
+    Node* temp = head;
+    int count = 0;
+    while(temp!=nullptr)
+        {
+            if(temp->data.GetName()==name)
+            {
+                temp->prev->next = temp->next;
+                temp->next->prev = temp->prev;
+                delete temp;
+                break;
+            }
+            temp = temp->next;
+            count++;
+            if(temp == nullptr)
+                break;
+        }
+
+    int count1 = 0;
+    Node* temp1 = head;
+    while(temp1!=nullptr)
+    {
+        count1++;
+        temp1 = temp1->next;
+    }
+
+    if(count==count1)
+    {
+        return -1;
+    }
+    else
+    {
+        return count;
+    }
 }
 
 Receipt DoublyLinkedList::NodeSearch(QString name, Node* head)
