@@ -46,15 +46,15 @@ void DoublyLinkedList::InsertMiddle(Receipt value, Node* &node_before, Node* &no
     node_after->prev = insert_node;
 }
 
-void DoublyLinkedList::ShowListStraight(Node* head)
+Node* DoublyLinkedList::ShowListStraight(Node* head, int i)
 {
     Node* temp = head;
-    while(temp != nullptr)
+    for(int j=0;j<i;j++)
     {
-        //вывод temp->data
-        temp = temp->next;
+        if(temp->prev == nullptr) return nullptr;
+        temp=temp->prev;
     }
-    delete temp;
+    return temp;
 }
 
 void DoublyLinkedList::ShowListReverse(Node* tail)
@@ -144,6 +144,64 @@ Receipt DoublyLinkedList::NodeSearch(QString name, Node* head)
     Receipt nul;
     return nul;
 }
+
+Node *split(Node *head)
+{
+    Node *fast = head,*slow = head;
+    while (fast->next && fast->next->next)
+    {
+        fast = fast->next->next;
+        slow = slow->next;
+    }
+    Node *temp = slow->next;
+    slow->next = NULL;
+    return temp;
+}
+
+Node *merge(Node *first, Node *second)
+{
+    // If first linked list is empty
+    if (!first)
+        return second;
+
+    // If second linked list is empty
+    if (!second)
+        return first;
+
+    // Pick the smaller value
+    if (first->data.GetMark().toInt() < second->data.GetMark().toInt())
+    {
+        first->next = merge(first->next,second);
+        first->next->prev = first;
+        first->prev = NULL;
+        return first;
+    }
+    else
+    {
+        second->next = merge(first,second->next);
+        second->next->prev = second;
+        second->prev = NULL;
+        return second;
+    }
+}
+
+Node* DoublyLinkedList::MergeSort(Node *head)
+{
+    if (!head || !head->next)
+        return head;
+    Node *second = split(head);
+
+    // Recur for left and right halves
+    head = MergeSort(head);
+    second = MergeSort(second);
+
+    // Merge the two sorted halves
+    return merge(head,second);
+}
+
+
+
+
 
 
 

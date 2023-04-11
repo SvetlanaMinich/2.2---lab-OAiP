@@ -375,7 +375,43 @@ void MainWindow::on_deleteByName_clicked()
     }
 }
 
-//Добавить сортировку
+void MainWindow::on_sort_clicked()
+{
+    head = mainList.MergeSort(head);
+    int size = ui->listOfReceipts->rowCount();
+    for(int i=0;i<size;i++)
+    {
+        ui->listOfReceipts->removeRow(0);
+    }
+    Node* temp = head;
+    for(int i=0;i<size;i++)
+    {
+        if(temp==nullptr) break;
+
+        ui->listOfReceipts->insertRow(i);
+
+        QString state = "Не выполнен";
+        if(QDate::fromString(temp->data.GetDate(), "dd.MM.yyyy").daysTo(QDate::currentDate())>7)
+        {
+            state = "Выполнен";
+        }
+
+        QTableWidgetItem* name = new QTableWidgetItem(temp->data.GetName());
+        QTableWidgetItem* mark = new QTableWidgetItem(temp->data.GetMark());
+        QTableWidgetItem* date = new QTableWidgetItem(temp->data.GetDate());
+        QTableWidgetItem* stateQ = new QTableWidgetItem(state);
+
+        ui->listOfReceipts->setItem(i,0,name);
+        ui->listOfReceipts->setItem(i,1,mark);
+        ui->listOfReceipts->setItem(i,2,date);
+        ui->listOfReceipts->setItem(i,3,stateQ);
+
+        temp=temp->next;
+    }
+}
+
+
+
 
 
 

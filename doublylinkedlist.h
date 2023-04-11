@@ -18,13 +18,13 @@ public:
     Node* InitFirstNode(Receipt value);
     void InsertBegin(Node* &head, Receipt value);
     void InsertEnd(Node* &tail, Receipt value);
-    void ShowListStraight(Node* head);
+    Node* ShowListStraight(Node* head, int i);
     void ShowListReverse(Node* tail);
     void InsertMiddle(Receipt value, Node* &node_before, Node* &node_after);
     void DeleteBegin(Node* &head);
     void DeleteEnd(Node* &tail);
     int DeleteMiddle(QString name, Node* head);
-    void MergeSort();
+    Node* MergeSort(Node* head);
     Receipt NodeSearch(QString name, Node* head);
     void NodeSearchByParameter();
 };

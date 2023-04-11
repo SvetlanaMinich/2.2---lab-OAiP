@@ -36,6 +36,8 @@ private slots:
 
     void on_deleteByName_clicked();
 
+    void on_sort_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
